@@ -34,7 +34,7 @@ if (isset($_GET["db"])) {
         $layoutRow['columns'] = $columnNames;
         $layouts[] = $layoutRow;
     }
-    header("Content-Type", "application/json");
+    header("Content-Type: application/json");
     echo json_encode($layouts);
 } else {
     http_response_code(404);

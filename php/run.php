@@ -22,7 +22,7 @@ if (!$dbConn->query("USE " . $input->db)) {
     die($dbConn->error);
 }
 
-header("Content-Type", "application/json");
+header("Content-Type: application/json");
 
 if (!$result = $dbConn->query($input->query)) {
     $error = array();
