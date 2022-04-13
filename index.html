@@ -19,8 +19,7 @@
     <main class="mx-md-3">
         <div class="row my-4">
             <div class="col-7">
-                <h2 class="mb-3">Database <button id="reset-button" class="btn btn-sm btn-outline-danger ms-2"
-                        onclick="resetDbs()">Reset standaard databases</button></h2>
+                <h2 class="mb-3">Database</h2>
                 <div class="input-group mb-3" style="max-width: 300px;">
                     <span class="input-group-text">Database</span>
                     <select id="db-select" name="db-select" class="from-control form-select"
@@ -98,7 +97,6 @@
         var dbList = [];
         var selectedDb;
         var queryResults = [];
-        var isResetting = false;
         var selectedLimit = 100;
         var selectedPage = 0;
         var pageCount = 0;
@@ -205,21 +203,6 @@
             queryInput.value = '';
         }
 
-        async function resetDbs() {
-            resultContainer.innerHTML = '';
-            displayLoading(true, 'Databases resetten.. Dit kan even duren.');
-            isResetting = true;
-            updateButtons();
-            const resetRequest = await fetch('php/reset.php', { method: 'POST' });
-            await getDatabases();
-            displayLoading(false);
-            isResetting = false;
-            updateButtons();
-            if (resetRequest.ok) {
-                resultContainer.innerHTML = '<div class="alert alert-success" role="alert">De databases zijn succesvol gereset!</div>';
-            }
-            await getLayout();
-        }
 
         function exportQuery(exportFormat) {
             window.open(`/export/${encodeURIComponent(selectedDb)}/${encodeURIComponent(queryResults[queryResults.length - 1][0])}/export.${exportFormat}`);
@@ -473,8 +456,8 @@
         }
 
         function updateButtons() {
-            runButton.disabled = isResetting || selectedDb == null;
-            exportButton.disabled = isResetting || selectedDb == null || !lastQuerySucces;
+            runButton.disabled = selectedDb == null;
+            exportButton.disabled = selectedDb == null || !lastQuerySucces;
         }
 
         // After loading
