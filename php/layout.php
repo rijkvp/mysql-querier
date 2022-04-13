@@ -3,6 +3,7 @@ include "db.inc.php";
 
 if (isset($_GET["db"])) {
     if (!$rootDbConn->query("USE " . $_GET["db"])) {
+        http_response_code(500);
         die($rootDbConn->error);
     }
 
@@ -19,6 +20,7 @@ if (isset($_GET["db"])) {
              WHERE TABLE_SCHEMA = Database() AND TABLE_NAME='" . $tableName . "'
             "
         )) {
+            http_response_code(500);
             die("Failed to get layout " . $rootDbConn->error);
         }
         $columnNames = array();
@@ -35,5 +37,6 @@ if (isset($_GET["db"])) {
     header("Content-Type", "application/json");
     echo json_encode($layouts);
 } else {
+    http_response_code(404);
     die("No database specified.");
 }

@@ -3,7 +3,9 @@
 ini_set("display_errors", 1);
 ini_set("display_startup_errors", 1);
 error_reporting(E_ALL);
-mysqli_report(MYSQLI_REPORT_ERROR);
+// Allow more memory for bigger databases
+// TODO: Limit database queries to avoid loading whole database in memory
+ini_set("memory_limit", "8192M");
 
 // Database connections
 $rootDbConn = new mysqli("localhost", "root");

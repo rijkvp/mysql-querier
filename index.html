@@ -187,6 +187,12 @@
                 }
             } else {
                 lastQuerySucces = false;
+                resRequest.status
+                displayResult({
+                    "success": false,
+                    "hasData": false,
+                    "error": `API communicatie mislukt, code: ${resRequest.status}.`
+                });
             }
             updateButtons();
         }
