@@ -1,0 +1,16 @@
+{
+  "name": "querier",
+  "version": "0.1.0",
+  "description": "A website to test SQL queries.",
+  "main": "querier.js",
+  "keywords": [
+    "express",
+    "sql"
+  ],
+  "author": "Rijk van Putten",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "mysql2": "^2.3.3"
+  }
+}
