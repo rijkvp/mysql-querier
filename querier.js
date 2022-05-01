@@ -24,8 +24,7 @@ async function main() {
     });
 
     // Serve static files from the public folder
-    // TODO: use index.html 
-    app.use(express.static('public'))
+    app.use(express.static('.'))
 
     // Use JSON format
     app.use(express.json());
