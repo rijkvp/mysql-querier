@@ -29,8 +29,8 @@ async function main() {
     // Use JSON format
     app.use(express.json());
 
-    // databases: Get a list of the databases
-    app.get('/databases', async (_, res) => {
+    // databases: receive a list of the databases
+    app.get('/php/databases.php', async (_, res) => {
         const [rows] = await rootDbConn.query('SHOW databases');
         // Hide default MySQL databases.
         const databases = rows.filter(i => i != 'information_schema' && i != 'performance_schema' && i != 'mysql' && i != 'sys');
@@ -38,9 +38,9 @@ async function main() {
     });
 
     // Layout: get the table columns and data types of the database
-    app.get('/layout/:db', async (req, res, next) => {
+    app.get('/php/layout.php', async (req, res, next) => {
         // Select database
-        const useResult = await rootDbConn.query(`USE ${req.params.db}`).catch(useErr => {
+        const useResult = await rootDbConn.query(`USE ${req.query.db}`).catch(useErr => {
             res.status(404).send('Database not found!');
         });
         if (useResult == null) {
@@ -67,7 +67,7 @@ async function main() {
     });
 
     // Run: execute a querry
-    app.post('/run', async (req, res, next) => {
+    app.post('/php/run.php', async (req, res, next) => {
         let dbConn;
         if (!req.body.readOnly) {
             dbConn = rootDbConn;
@@ -139,24 +139,25 @@ async function main() {
     });
 
     // Reset: executes the database reset script
-    app.post('/reset', async (req, res) => {
-        cp.exec('cd .. && ./scripts/reset_dbs.sh', (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error during reset: ${error}`);
-                res.status(500).send();
-            }
-            if (stderr) {
-                console.error(`Error during reset (STERR): ${stderr}`);
-                res.status(500).send();
-            }
-            res.send();
-        });
-    });
+    // TODO: Add reset function back
+    // app.post('/php/reset.php', async (req, res) => {
+    //     cp.exec('cd .. && ./scripts/reset_dbs.sh', (error, stdout, stderr) => {
+    //         if (error) {
+    //             console.error(`Error during reset: ${error}`);
+    //             res.status(500).send();
+    //         }
+    //         if (stderr) {
+    //             console.error(`Error during reset (STERR): ${stderr}`);
+    //             res.status(500).send();
+    //         }
+    //         res.send();
+    //     });
+    // });
 
     // Export: exports a query result to a file
-    app.get('/export/:db/:query/:filename.:format', async (req, res, next) => {
+    app.get('/php/export.php', async (req, res, next) => {
         // Select database
-        let useResult = await readDbConn.query(`USE ${req.params.db}`).catch(useErr => {
+        let useResult = await readDbConn.query(`USE ${req.query.db}`).catch(useErr => {
             res.status(404).send('Database not found!');
         });
 
@@ -165,7 +166,7 @@ async function main() {
             next();
         }
         else {
-            readDbConn.query(req.params.query).catch(queryErr => {
+            readDbConn.query(req.query.query).catch(queryErr => {
                 res.status(400).send('Invalid query!');
             }).then(result => {
                 if (result == null) {
@@ -182,7 +183,7 @@ async function main() {
                         columnNames.push(c.name);
                     });
 
-                    switch (req.params.format.toLowerCase()) {
+                    switch (req.query.format.toLowerCase()) {
                         // Comma Seperated File
                         case 'csv':
                             var file = '';
