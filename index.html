@@ -19,7 +19,10 @@
     <main class="mx-md-3">
         <div class="row my-4">
             <div class="col-7">
-                <h2 class="mb-3">Database</h2>
+                <h2 class="mb-3">Database
+                    <button class="ms-2 btn btn-sm btn-outline-danger" onclick="restoreDefaultDbs()">Herstel standaard
+                        databases</button>
+                </h2>
                 <div class="input-group mb-3" style="max-width: 300px;">
                     <span class="input-group-text">Database</span>
                     <select id="db-select" name="db-select" class="from-control form-select"
@@ -227,6 +230,21 @@
                 .then(data => {
                     saveFile(`export.${exportFormat}`, data);
                 });
+        }
+
+        async function restoreDefaultDbs() {
+            displayLoading(true, 'Standaard databases aan het herstellen..');
+            fetch(`php/restore.php`).then(response => {
+                if (response.ok) {
+                    getDatabases().then(
+                        () => {
+                            getLayout().then(() => {
+                                displayLoading(false);
+                            }
+                            );
+                        });
+                }
+            });
         }
 
         function changeLimit(element) {

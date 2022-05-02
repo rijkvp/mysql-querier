@@ -138,21 +138,21 @@ async function main() {
         }
     });
 
-    // Reset: executes the database reset script
-    // TODO: Add reset function back
-    // app.post('/php/reset.php', async (req, res) => {
-    //     cp.exec('cd .. && ./scripts/reset_dbs.sh', (error, stdout, stderr) => {
-    //         if (error) {
-    //             console.error(`Error during reset: ${error}`);
-    //             res.status(500).send();
-    //         }
-    //         if (stderr) {
-    //             console.error(`Error during reset (STERR): ${stderr}`);
-    //             res.status(500).send();
-    //         }
-    //         res.send();
-    //     });
-    // });
+    // Restore: executes a database restore script
+    // NOTE: This function assumes a restore script is placed in the ./../scripts folder. 
+    app.get('/php/restore.php', async (req, res) => {
+        cp.exec('cd .. &&  ./scripts/restore_dbs.sh', (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error during reset: ${error}`);
+                res.status(500).send();
+            }
+            if (stderr) {
+                console.error(`Error during reset (STERR): ${stderr}`);
+                res.status(500).send();
+            }
+            res.send();
+        });
+    });
 
     // Export: exports a query result to a file
     app.get('/php/export.php', async (req, res, next) => {
